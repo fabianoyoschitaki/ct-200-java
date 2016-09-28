@@ -1,11 +1,11 @@
 package br.ct200.tarefa1.util;
 
-import br.ct200.tarefa1.common.ProcessamentoLinguagem;
-import br.ct200.tarefa1.common.ProcessamentoLinguagemConcatenacao;
-import br.ct200.tarefa1.common.ProcessamentoLinguagemKleene;
-import br.ct200.tarefa1.common.ProcessamentoLinguagemParentese;
-import br.ct200.tarefa1.common.ProcessamentoLinguagemUniao;
 import br.ct200.tarefa1.common.TipoProcessamentoEnum;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagem;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagemConcatenacao;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagemKleene;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagemParentese;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagemUniao;
 
 /**
  * Classe que descobre e faz os processamentos da linguagem para os 4 tipos:

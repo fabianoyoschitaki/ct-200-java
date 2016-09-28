@@ -7,6 +7,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.ct200.tarefa1.processo.ProcessamentoCadeia;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagem;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagemConcatenacao;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagemKleene;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagemParentese;
+import br.ct200.tarefa1.processo.ProcessamentoLinguagemUniao;
 import br.ct200.tarefa1.util.ProcessamentoLinguagemUtil;
 
 public class Automato {
@@ -165,15 +171,18 @@ public class Automato {
 		this.mapArcosPorIdEstado = mapArcosPorIdEstado;
 	}
 
+	public ProcessamentoCadeia processaCadeia(String cadeiaParaVerificar) {
+		ProcessamentoCadeia retorno = new ProcessamentoCadeia(cadeiaParaVerificar);
+		System.out.println(mapEstadosPorId.get(1).getTipo());
+		return retorno;
+	}
+	
 	public static void main(String[] args) {
-//		String expressaoRegular = "(a+b)*bb(b+a)*";
-//		String expressaoRegular = "(a(b+c))*";
-//		String expressaoRegular = "a*b+b*a";
-		String expressaoRegular = "a*b*c*";
-		System.out.println("Regex: " + expressaoRegular);
+		String expressaoRegular = "(a+b)*bb(b+a)*";
+		String cadeiaParaVerificar = "abb";
 		Automato automato = new Automato(expressaoRegular);
 		automato.processaAutomato();
-		automato.imprimeAutomatoTeste();
 		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
+		automato.processaCadeia(cadeiaParaVerificar);
 	}
 }
