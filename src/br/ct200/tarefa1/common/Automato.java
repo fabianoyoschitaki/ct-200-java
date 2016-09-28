@@ -114,8 +114,7 @@ public class Automato {
 	 */
 	private void processaArco(Arco arcoParaProcessar) {
 		while (arcoParaProcessar.getExpressao().length() > 1){
-			System.out.println("Arco para processar: " + arcoParaProcessar);
-			ProcessamentoLinguagem processamentoArco = ProcessamentoLinguagemUtil.getTipoProcessamentoLinguagem(arcoParaProcessar.getExpressao());
+			ProcessamentoLinguagem processamentoArco = ProcessamentoLinguagemUtil.getTipoProcessamentoLinguagem(arcoParaProcessar);
 			if (processamentoArco instanceof ProcessamentoLinguagemUniao){
 				ProcessamentoLinguagemUniao uniao = (ProcessamentoLinguagemUniao) processamentoArco;
 				arcoParaProcessar.setExpressao(uniao.getLinguagemInicial());
@@ -171,9 +170,15 @@ public class Automato {
 		this.mapArcosPorIdEstado = mapArcosPorIdEstado;
 	}
 
+	/**
+	 * Método que verifica se determinada cadeia é aceita pelo autômato.
+	 * 
+	 * @param cadeiaParaVerificar
+	 * @return
+	 */
 	public ProcessamentoCadeia processaCadeia(String cadeiaParaVerificar) {
 		ProcessamentoCadeia retorno = new ProcessamentoCadeia(cadeiaParaVerificar);
-		System.out.println(mapEstadosPorId.get(1).getTipo());
+		System.out.println(mapEstadosPorId.get(0).getTipo());
 		return retorno;
 	}
 	
@@ -182,7 +187,15 @@ public class Automato {
 		String cadeiaParaVerificar = "abb";
 		Automato automato = new Automato(expressaoRegular);
 		automato.processaAutomato();
-		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
-		automato.processaCadeia(cadeiaParaVerificar);
+		ProcessamentoCadeia resultado = automato.processaCadeia(cadeiaParaVerificar);
+		System.out.println("Cadeia:" + resultado.getCadeia());
+		for (Estado estado : resultado.getEstadosPossiveis()) {
+			System.out.println("Estado possível: " + estado.getId());
+		}
+		if (resultado.isCadeiaAceita()){
+			System.out.println("Cadeia aceita.");
+		} else {
+			System.out.println("Cadeia não aceita.");
+		}
 	}
 }
