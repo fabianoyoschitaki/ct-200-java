@@ -19,7 +19,8 @@ import br.ct200.tarefa1.processo.ProcessamentoLinguagemUniao;
  *
  */
 public class ProcessamentoLinguagemUtil {
-	private static StringBuffer passosTransformacao = new StringBuffer();
+	public static StringBuffer passosTransformacao = new StringBuffer();
+	
 	/**
 	 * Método que verifica tipo de processamento da linguagem na ordem
 	 * de TipoProcessamentoEnum

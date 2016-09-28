@@ -15,10 +15,9 @@ public class MainPrimeiraAtividade {
 //		String expressaoRegular = "(a(b+c))*";
 //		String expressaoRegular = "a*b+b*a";
 		String expressaoRegular = "a*b*c*";
+		
 		System.out.println("Regex: " + expressaoRegular);
 		Automato automato = new Automato(expressaoRegular);
-		automato.processaAutomato();
-//		automato.imprimeAutomatoTeste();
 		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
 	}
 

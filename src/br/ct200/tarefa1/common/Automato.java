@@ -13,6 +13,7 @@ import br.ct200.tarefa1.processo.ProcessamentoLinguagemConcatenacao;
 import br.ct200.tarefa1.processo.ProcessamentoLinguagemKleene;
 import br.ct200.tarefa1.processo.ProcessamentoLinguagemParentese;
 import br.ct200.tarefa1.processo.ProcessamentoLinguagemUniao;
+import br.ct200.tarefa1.util.ProcessamentoCadeiaUtil;
 import br.ct200.tarefa1.util.ProcessamentoLinguagemUtil;
 
 public class Automato {
@@ -28,6 +29,7 @@ public class Automato {
 		this.mapEstadosPorId = new LinkedHashMap<Integer, Estado>();
 		this.alfabeto = new ArrayList<String>();
 		criaNovoArco(criaNovoEstado(TipoEstadoEnum.INICIAL), criaNovoEstado(TipoEstadoEnum.FINAL), expressaoRegular);
+		this.processaAutomato();
 	}
 
 	/**
@@ -94,7 +96,7 @@ public class Automato {
 	 * Método que processa autômato até que todos
 	 * os arcos tenham apenas um símbolo
 	 */
-	public void processaAutomato() {
+	private void processaAutomato() {
 		Arco arcoParaProcessar = proximoArcoParaProcessar();
 		while (arcoParaProcessar != null){
 			processaArco(arcoParaProcessar);
@@ -165,32 +167,33 @@ public class Automato {
 	public List<Arco> getArcosPorIdEstado(Integer idEstado) {
 		return mapArcosPorIdEstado.get(idEstado);
 	}
-
-	public void setMapArcosPorIdEstado(Map<Integer, List<Arco>> mapArcosPorIdEstado) {
-		this.mapArcosPorIdEstado = mapArcosPorIdEstado;
+	
+	public Estado getEstadoPorId(Integer idEstado){
+		return mapEstadosPorId.get(idEstado);
 	}
 
-	/**
-	 * Método que verifica se determinada cadeia é aceita pelo autômato.
-	 * 
-	 * @param cadeiaParaVerificar
-	 * @return
-	 */
 	public ProcessamentoCadeia processaCadeia(String cadeiaParaVerificar) {
-		ProcessamentoCadeia retorno = new ProcessamentoCadeia(cadeiaParaVerificar);
-		System.out.println(mapEstadosPorId.get(0).getTipo());
-		return retorno;
+		return ProcessamentoCadeiaUtil.processaCadeia(this, cadeiaParaVerificar);
 	}
 	
 	public static void main(String[] args) {
-		String expressaoRegular = "(a+b)*bb(b+a)*";
-		String cadeiaParaVerificar = "abb";
+//		String expressaoRegular = "(a+b)*bb(b+a)*";
+//		String expressaoRegular = "(a(b+c))*";
+//		String expressaoRegular = "a*b+b*a";
+		String expressaoRegular = "a*b*c*";
+		
+//		String cadeiaParaVerificar = "ab";
+//		String cadeiaParaVerificar = "abb";
+//		String cadeiaParaVerificar = "bba";
+		String cadeiaParaVerificar = "abba";
+		
 		Automato automato = new Automato(expressaoRegular);
-		automato.processaAutomato();
 		ProcessamentoCadeia resultado = automato.processaCadeia(cadeiaParaVerificar);
+		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
+		System.out.println(ProcessamentoCadeiaUtil.passosProcessamento.toString());
 		System.out.println("Cadeia:" + resultado.getCadeia());
 		for (Estado estado : resultado.getEstadosPossiveis()) {
-			System.out.println("Estado possível: " + estado.getId());
+			System.out.println("Estado possível: " + estado);
 		}
 		if (resultado.isCadeiaAceita()){
 			System.out.println("Cadeia aceita.");

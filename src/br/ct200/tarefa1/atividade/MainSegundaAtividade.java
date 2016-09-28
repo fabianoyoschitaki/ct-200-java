@@ -2,6 +2,9 @@ package br.ct200.tarefa1.atividade;
 
 import br.ct200.tarefa1.common.Automato;
 import br.ct200.tarefa1.common.AutomatoParser;
+import br.ct200.tarefa1.common.Estado;
+import br.ct200.tarefa1.processo.ProcessamentoCadeia;
+import br.ct200.tarefa1.util.ProcessamentoCadeiaUtil;
 
 public class MainSegundaAtividade {
 
@@ -15,10 +18,19 @@ public class MainSegundaAtividade {
 	public static void main(String[] args) {
 		String expressaoRegular = "(a+b)*bb(b+a)*";
 		String cadeiaParaVerificar = "abb";
+		
 		Automato automato = new Automato(expressaoRegular);
-		automato.processaAutomato();
 		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
-		automato.processaCadeia(cadeiaParaVerificar);
+		ProcessamentoCadeia resultado = automato.processaCadeia(cadeiaParaVerificar);
+		System.out.println("Cadeia:" + resultado.getCadeia());
+		for (Estado estado : resultado.getEstadosPossiveis()) {
+			System.out.println("Estado possível: " + estado.getId());
+		}
+		if (resultado.isCadeiaAceita()){
+			System.out.println("Cadeia aceita.");
+		} else {
+			System.out.println("Cadeia não aceita.");
+		}
 	}
 
 }
