@@ -6,7 +6,7 @@ import br.ct200.tarefa1.common.Estado;
 import br.ct200.tarefa1.processo.ProcessamentoCadeia;
 import br.ct200.tarefa1.util.ProcessamentoCadeiaUtil;
 
-public class MainSegundaAtividade {
+public class MainTerceiraAtividade {
 
 	/**
 	 * Segunda Atividade, recebe uma expressão regular e uma cadeia de entrada e 

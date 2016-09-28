@@ -175,30 +175,4 @@ public class Automato {
 	public ProcessamentoCadeia processaCadeia(String cadeiaParaVerificar) {
 		return ProcessamentoCadeiaUtil.processaCadeia(this, cadeiaParaVerificar);
 	}
-	
-	public static void main(String[] args) {
-//		String expressaoRegular = "(a+b)*bb(b+a)*";
-//		String expressaoRegular = "(a(b+c))*";
-//		String expressaoRegular = "a*b+b*a";
-		String expressaoRegular = "a*b*c*";
-		
-//		String cadeiaParaVerificar = "ab";
-//		String cadeiaParaVerificar = "abb";
-//		String cadeiaParaVerificar = "bba";
-		String cadeiaParaVerificar = "abba";
-		
-		Automato automato = new Automato(expressaoRegular);
-		ProcessamentoCadeia resultado = automato.processaCadeia(cadeiaParaVerificar);
-		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
-		System.out.println(ProcessamentoCadeiaUtil.passosProcessamento.toString());
-		System.out.println("Cadeia:" + resultado.getCadeia());
-		for (Estado estado : resultado.getEstadosPossiveis()) {
-			System.out.println("Estado possível: " + estado);
-		}
-		if (resultado.isCadeiaAceita()){
-			System.out.println("Cadeia aceita.");
-		} else {
-			System.out.println("Cadeia não aceita.");
-		}
-	}
 }
