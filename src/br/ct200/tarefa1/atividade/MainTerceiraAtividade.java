@@ -1,43 +1,30 @@
 package br.ct200.tarefa1.atividade;
 
-import br.ct200.tarefa1.common.Automato;
-import br.ct200.tarefa1.common.AutomatoParser;
-import br.ct200.tarefa1.common.Estado;
-import br.ct200.tarefa1.processo.ProcessamentoCadeia;
-import br.ct200.tarefa1.util.ProcessamentoCadeiaUtil;
+import br.ct200.tarefa1.common.AutomatoSemEpsilon;
+import br.ct200.tarefa1.common.GraphvizParser;
 
 public class MainTerceiraAtividade {
 
 	/**
-	 * Segunda Atividade, recebe uma expressão regular e uma cadeia de entrada e 
-	 * retorna os possíveis estados após a computação da cadeia e se o estado final 1 
-	 * pertence a esse conjunto de estados (cadeia aceita ou não pelo autômato)0 
+	 * Terceira Atividade, remove as &-transições de um autômato,
+	 * (podendo resultar em múltiplos estados finais)
+	 * 
+	 * Algoritmo:
+	 * I 	computa o &-fecho de cada estado
+	 * II 	todo arco de A em X gera um arco de A em Y para cada Y no &-fecho(X)
+	 * III 	todo arco de Y em A para qualquer Y no &-fecho(X) gera um arco de X para A
+	 * IV 	X é estado final se algum Y no &-fecho(X) for final
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		String expressaoRegular = "(a+b)*bb(b+a)*";
+		String expressaoRegular = "(a+b)*bb(b+a)*";
 //		String expressaoRegular = "(a(b+c))*";
 //		String expressaoRegular = "a*b+b*a";
-		String expressaoRegular = "a*b*c*";
+//		String expressaoRegular = "a*b*c*";
 		
-//		String cadeiaParaVerificar = "ab";
-//		String cadeiaParaVerificar = "abb";
-//		String cadeiaParaVerificar = "bba";
-		String cadeiaParaVerificar = "abba";
-		
-		Automato automato = new Automato(expressaoRegular);
-		ProcessamentoCadeia resultado = automato.processaCadeia(cadeiaParaVerificar);
-		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
-		System.out.println(ProcessamentoCadeiaUtil.passosProcessamento.toString());
-		System.out.println("Cadeia:" + resultado.getCadeia());
-		for (Estado estado : resultado.getEstadosPossiveis()) {
-			System.out.println("Estado possível: " + estado);
-		}
-		if (resultado.isCadeiaAceita()){
-			System.out.println("Cadeia aceita.");
-		} else {
-			System.out.println("Cadeia não aceita.");
-		}
+		System.out.println("Regex: " + expressaoRegular);
+		AutomatoSemEpsilon automatoSemEpsilon = new AutomatoSemEpsilon(expressaoRegular);
+		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automatoSemEpsilon.getAutomato()));
 	}
 }

@@ -2,7 +2,7 @@ package br.ct200.tarefa1.common;
 
 import java.util.List;
 
-public class AutomatoParser {
+public class GraphvizParser {
 	public static String traduzAutomatoParaGraphviz(Automato automato){
 		StringBuffer retorno = new StringBuffer("digraph finite_state_machine {");
 		retorno.append("\n	rankdir=LR;");

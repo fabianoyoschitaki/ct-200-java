@@ -1,7 +1,7 @@
 package br.ct200.tarefa1.atividade;
 
 import br.ct200.tarefa1.common.Automato;
-import br.ct200.tarefa1.common.AutomatoParser;
+import br.ct200.tarefa1.common.GraphvizParser;
 
 public class MainPrimeiraAtividade {
 
@@ -18,7 +18,7 @@ public class MainPrimeiraAtividade {
 		
 		System.out.println("Regex: " + expressaoRegular);
 		Automato automato = new Automato(expressaoRegular);
-		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
+		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
 	}
 
 }

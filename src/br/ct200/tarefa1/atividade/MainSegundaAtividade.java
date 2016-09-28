@@ -1,7 +1,7 @@
 package br.ct200.tarefa1.atividade;
 
 import br.ct200.tarefa1.common.Automato;
-import br.ct200.tarefa1.common.AutomatoParser;
+import br.ct200.tarefa1.common.GraphvizParser;
 import br.ct200.tarefa1.common.Estado;
 import br.ct200.tarefa1.processo.ProcessamentoCadeia;
 import br.ct200.tarefa1.util.ProcessamentoCadeiaUtil;
@@ -28,7 +28,7 @@ public class MainSegundaAtividade {
 		
 		Automato automato = new Automato(expressaoRegular);
 		ProcessamentoCadeia resultado = automato.processaCadeia(cadeiaParaVerificar);
-		System.out.println(AutomatoParser.traduzAutomatoParaGraphviz(automato));
+		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
 		System.out.println(ProcessamentoCadeiaUtil.passosProcessamento.toString());
 		System.out.println("Cadeia:" + resultado.getCadeia());
 		for (Estado estado : resultado.getEstadosPossiveis()) {

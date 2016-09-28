@@ -20,16 +20,20 @@ public class Automato {
 	private HashMap<Integer, Estado> mapEstadosPorId;
 	private String expressaoRegular;
 	private Map<Integer, List<Arco>> mapArcosPorIdEstado;
-	private List<String> alfabeto;
 	
 	public Automato(String expressaoRegular){
 		super();
 		this.expressaoRegular = expressaoRegular;
 		this.mapArcosPorIdEstado = new LinkedHashMap<Integer, List<Arco>>();
 		this.mapEstadosPorId = new LinkedHashMap<Integer, Estado>();
-		this.alfabeto = new ArrayList<String>();
 		criaNovoArco(criaNovoEstado(TipoEstadoEnum.INICIAL), criaNovoEstado(TipoEstadoEnum.FINAL), expressaoRegular);
 		this.processaAutomato();
+	}
+	
+	public Automato(){
+		super();
+		this.mapArcosPorIdEstado = new LinkedHashMap<Integer, List<Arco>>();
+		this.mapEstadosPorId = new LinkedHashMap<Integer, Estado>();
 	}
 
 	/**
@@ -43,7 +47,6 @@ public class Automato {
 		mapEstadosPorId.put(retorno.getId(), retorno);
 		return retorno;
 	}
-
 
 	/** 
 	 * Método que cria novo arco para o autômato 
@@ -65,18 +68,6 @@ public class Automato {
 	
 	public Collection<Estado> getTodosEstados() {
 		return mapEstadosPorId.values();
-	}
-
-	public void setExpressaoRegular(String expressaoRegular) {
-		this.expressaoRegular = expressaoRegular;
-	}
-
-	public List<String> getAlfabeto() {
-		return alfabeto;
-	}
-
-	public void setAlfabeto(List<String> alfabeto) {
-		this.alfabeto = alfabeto;
 	}
 
 	public void imprimeAutomatoTeste(){
