@@ -36,4 +36,8 @@ public class Estado {
 		}
 		return retorno.toString();
 	}
+	
+	public static void zeraId(){
+		proximoId = 0;
+	}
 }

@@ -23,6 +23,7 @@ public class Automato {
 	
 	public Automato(String expressaoRegular){
 		super();
+		Estado.zeraId();
 		this.expressaoRegular = expressaoRegular;
 		this.mapArcosPorIdEstado = new LinkedHashMap<Integer, List<Arco>>();
 		this.mapEstadosPorId = new LinkedHashMap<Integer, Estado>();

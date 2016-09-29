@@ -1,6 +1,7 @@
 package br.ct200.tarefa1.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ public class AutomatoSemEpsilon {
 	private Automato automatoOriginal;
 	private Automato automatoResultado;
 	
+	private Map<Integer, List<Integer>> mapFechosEpsilonPorEstado;
+	
 	private HashMap<Integer, Estado> mapEstadosPorId;
 	private Map<Integer, List<Arco>> mapArcosPorIdEstado;
 	
@@ -18,6 +21,7 @@ public class AutomatoSemEpsilon {
 		this.expressaoRegular = expressaoRegular;
 		this.automatoOriginal = new Automato(expressaoRegular);
 		this.automatoResultado = new Automato();
+		this.mapFechosEpsilonPorEstado = new HashMap<Integer, List<Integer>>();
 		this.geraAutomatoSemTransicaoEpsilon();
 	}
 
@@ -38,7 +42,38 @@ public class AutomatoSemEpsilon {
 	 * @param args
 	 */
 	private void geraAutomatoSemTransicaoEpsilon() {
-		// TODO Auto-generated method stub
+		calculaFechosEpsilon(automatoOriginal.getTodosEstados());
+	}
+
+	private void calculaFechosEpsilon(Collection<Estado> todosEstados) {
+		for (Estado estado : todosEstados){
+			List<Integer> fechosEpsilon = new ArrayList<Integer>();
+			setFechosEpsilonRecursivo(fechosEpsilon, automatoOriginal.getArcosPorIdEstado(estado.getId()));
+			mapFechosEpsilonPorEstado.put(estado.getId(), fechosEpsilon);
+			if (!mapFechosEpsilonPorEstado.get(estado.getId()).isEmpty()){
+				System.out.println("Fechos-e do estado " + estado.getId());
+				for (Integer fecho : fechosEpsilon) {
+					System.out.println(fecho);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Descobre recursivamente os fechos-epsilon de cada estado
+	 * 
+	 * @param retorno
+	 * @param arcos
+	 */
+	private void setFechosEpsilonRecursivo(List<Integer> retorno, List<Arco> arcos) {
+		if (arcos != null && !arcos.isEmpty()){
+			for (Arco arco : arcos) {
+				if ("&".equals(arco.getExpressao())){
+					retorno.add(arco.getIdEstadoFinal());
+					setFechosEpsilonRecursivo(retorno, automatoOriginal.getArcosPorIdEstado(arco.getIdEstadoFinal()));
+				}
+			}
+		}
 	}
 
 	public String getExpressaoRegular() {
@@ -72,7 +107,7 @@ public class AutomatoSemEpsilon {
 	}
 	
 	public static void main(String[] args) {
-		String expressaoRegular = "(a+b)*bb(b+a)*";
+		String expressaoRegular = "a*b+b*a";
 //		String expressaoRegular = "(a(b+c))*";
 //		String expressaoRegular = "a*b+b*a";
 //		String expressaoRegular = "a*b*c*";
@@ -80,5 +115,6 @@ public class AutomatoSemEpsilon {
 		System.out.println("Regex: " + expressaoRegular);
 		AutomatoSemEpsilon automatoSemEpsilon = new AutomatoSemEpsilon(expressaoRegular);
 		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automatoSemEpsilon.getAutomato()));
+		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(new Automato(expressaoRegular)));
 	}
 }
