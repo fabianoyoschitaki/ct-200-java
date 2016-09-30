@@ -31,12 +31,6 @@ public class Automato {
 		this.processaAutomato();
 	}
 	
-	public Automato(){
-		super();
-		this.mapArcosPorIdEstado = new LinkedHashMap<Integer, List<Arco>>();
-		this.mapEstadosPorId = new LinkedHashMap<Integer, Estado>();
-	}
-
 	/**
 	 * Cria novo estado e guarda no mapa
 	 * 
@@ -52,15 +46,9 @@ public class Automato {
 	/** 
 	 * Método que cria novo arco para o autômato 
 	 */
-	private void criaNovoArco(Estado estadoInicial, Estado estadoFinal,
+	public void criaNovoArco(Estado estadoInicial, Estado estadoFinal,
 			String expressao) {
-		Arco novoArco = new Arco(estadoInicial, estadoFinal, expressao);
-		List<Arco> arcosDoEstadoInicial = mapArcosPorIdEstado.get(estadoInicial.getId());
-		if (arcosDoEstadoInicial == null){
-			arcosDoEstadoInicial = new ArrayList<Arco>();
-		}
-		arcosDoEstadoInicial.add(novoArco);
-		mapArcosPorIdEstado.put(novoArco.getIdEstadoInicial(), arcosDoEstadoInicial);
+		criaNovoArco(new Arco(estadoInicial, estadoFinal, expressao));
 	}
 
 	public String getExpressaoRegular() {
@@ -166,5 +154,14 @@ public class Automato {
 
 	public ProcessamentoCadeia processaCadeia(String cadeiaParaVerificar) {
 		return ProcessamentoCadeiaUtil.processaCadeia(this, cadeiaParaVerificar);
+	}
+
+	public void criaNovoArco(Arco novoArco) {
+		List<Arco> arcosDoEstadoInicial = mapArcosPorIdEstado.get(novoArco.getEstadoInicial().getId());
+		if (arcosDoEstadoInicial == null){
+			arcosDoEstadoInicial = new ArrayList<Arco>();
+		}
+		arcosDoEstadoInicial.add(novoArco);
+		mapArcosPorIdEstado.put(novoArco.getIdEstadoInicial(), arcosDoEstadoInicial);
 	}
 }
