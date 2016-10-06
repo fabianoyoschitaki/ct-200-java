@@ -1,7 +1,10 @@
 package br.ct200.tarefa1.atividade;
 
+import java.util.List;
+
 import br.ct200.tarefa1.common.AutomatoSemEpsilon;
 import br.ct200.tarefa1.common.GraphvizParser;
+import br.ct200.tarefa1.common.Passo;
 
 public class MainTerceiraAtividade {
 
@@ -25,6 +28,10 @@ public class MainTerceiraAtividade {
 		
 		System.out.println("Regex: " + expressaoRegular);
 		AutomatoSemEpsilon automatoSemEpsilon = new AutomatoSemEpsilon(expressaoRegular);
+		List<Passo> passos = automatoSemEpsilon.getPassosAutomato();
+		for (Passo passo : passos) {
+			System.out.println(passo);
+		}
 		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automatoSemEpsilon.getAutomato()));
 	}
 }

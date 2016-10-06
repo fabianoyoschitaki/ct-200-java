@@ -38,7 +38,7 @@ public class Automato {
 	public Automato(String expressaoRegular){
 		super();
 		Estado.zeraId();
-		adicionaPasso("Iniciando automâto com regex: " + expressaoRegular);
+		adicionaPasso("Iniciando automâto com regex : " + expressaoRegular);
 		this.expressaoRegular = expressaoRegular;
 		this.mapArcosPorIdEstado = new LinkedHashMap<Integer, List<Arco>>();
 		this.mapEstadosPorId = new LinkedHashMap<Integer, Estado>();

@@ -8,13 +8,20 @@ import java.util.Map;
 import java.util.Set;
 
 public class AutomatoSemEpsilon {
-
+	/** autômato com transições epsilon de entrada **/
 	private Automato automato;
+	
+	/** map de id estado x fechos epsilon do estado **/
 	private Map<Integer, List<Integer>> mapFechosEpsilonPorEstado;
+	
+	/** passos para a criação do autômato sem transições epsilon **/
+	private List<Passo> passosAutomato = new ArrayList<Passo>();
+	private Integer numeroPassoAutomato = 0;
 	
 	public AutomatoSemEpsilon(String expressaoRegular) {
 		this.automato = new Automato(expressaoRegular);
 		this.mapFechosEpsilonPorEstado = new HashMap<Integer, List<Integer>>();
+		adicionaPasso("Iniciando remoção de transições epsilon a partir da regex : " + expressaoRegular);
 		this.geraAutomatoSemTransicaoEpsilon();
 	}
 
@@ -49,17 +56,20 @@ public class AutomatoSemEpsilon {
 	 * Remove as transições epsilon do autômato
 	 */
 	private void removeTransicoesEpsilon() {
+		adicionaPasso("Inicio remoção transições epsilon");
 		for (Estado estado : automato.getTodosEstados()){
 			List<Arco> arcosDoEstado = automato.getArcosPorIdEstado(estado.getId());
 			if (arcosDoEstado != null){
 				for (Iterator<Arco> iter = arcosDoEstado.iterator(); iter.hasNext();) {
 					Arco arco = iter.next();
 					if ("&".equals(arco.getExpressao())){
+						adicionaPasso("Removendo arco : " + arco);
 						iter.remove();
 					}
 				}
 			}
 		}
+		adicionaPasso("Fim remoção transições epsilon");
 	}
 
 	/**
@@ -67,19 +77,24 @@ public class AutomatoSemEpsilon {
 	 * se X é estado final se algum Y no &-fecho(X) for final
 	 */
 	private void calculaFechosEpsilon() {
+		adicionaPasso("Inicio computação fechos epsilon");
 		for (Estado estado : automato.getTodosEstados()){
 			List<Integer> fechosEpsilon = new ArrayList<Integer>();
+			adicionaPasso("Computando fechos epsilon para estado : " + estado);
 			setFechosEpsilonRecursivo(fechosEpsilon, automato.getArcosPorIdEstado(estado.getId()));
 			if (fechosEpsilon != null && !fechosEpsilon.isEmpty()){
 				mapFechosEpsilonPorEstado.put(estado.getId(), fechosEpsilon);
-//				System.out.println("Fechos-e do estado " + estado.getId());
 				for (Integer fecho : fechosEpsilon) {
+					adicionaPasso("Estado " + automato.getEstadoPorId(fecho) + " é fecho epsilon de " + estado);
 					if (TipoEstadoEnum.FINAL.equals(automato.getEstadoPorId(fecho).getTipo())){
 						estado.setTipo(TipoEstadoEnum.FINAL);
 					}
 				}
+			} else {
+				adicionaPasso("Estado " + estado + " não tem fechos epsilon");
 			}
 		}
+		adicionaPasso("Fim computação fechos epsilon");
 	}
 
 	/**
@@ -149,14 +164,21 @@ public class AutomatoSemEpsilon {
 		return retorno;
 	}
 	
-	public static void main(String[] args) {
-//		String expressaoRegular = "(a+b)*bb(b+a)*";
-//		String expressaoRegular = "(a(b+c))*";
-//		String expressaoRegular = "a*b+b*a";
-		String expressaoRegular = "a*b*c*";
-		
-		System.out.println("Regex: " + expressaoRegular);
-		AutomatoSemEpsilon automatoSemEpsilon = new AutomatoSemEpsilon(expressaoRegular);
-		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automatoSemEpsilon.getAutomato()));
+	/**
+	 * Retorna o histórico de passos para a criação do autômato
+	 * 
+	 * @return
+	 */
+	public List<Passo> getPassosAutomato() {
+		return passosAutomato;
+	}
+	
+	/**
+	 * Cria novo passo para guardar no histórico
+	 * 
+	 * @param descricao
+	 */
+	public void adicionaPasso(String descricao){
+		this.passosAutomato.add(new Passo(numeroPassoAutomato++, descricao));
 	}
 }

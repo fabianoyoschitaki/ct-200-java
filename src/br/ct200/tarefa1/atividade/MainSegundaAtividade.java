@@ -23,10 +23,10 @@ public class MainSegundaAtividade {
 //		String expressaoRegular = "a*b+b*a";
 		String expressaoRegular = "a*b*c*";
 		
-//		String cadeiaParaVerificar = "ab";
+		String cadeiaParaVerificar = "ab";
 //		String cadeiaParaVerificar = "abb";
 //		String cadeiaParaVerificar = "bba";
-		String cadeiaParaVerificar = "abba";
+//		String cadeiaParaVerificar = "abba";
 		
 		Automato automato = new Automato(expressaoRegular);
 		ProcessamentoCadeia resultado = automato.processaCadeia(cadeiaParaVerificar);
