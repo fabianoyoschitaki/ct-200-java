@@ -50,6 +50,7 @@ public class AutomatoSemEpsilon {
 		for (Arco novoArco : novosArcos) {
 			automato.criaNovoArco(novoArco);
 		}
+		adicionaPasso("Remoção de transições epsilon do autômato concluída");
 	}
 
 	/**
@@ -157,15 +158,15 @@ public class AutomatoSemEpsilon {
 			for (Integer estadoFechoEpsilon : estadosFechoEpsilon) {
 				List<Arco> arcosDoEstadoFechoEpsilon = automato.getArcosPorIdEstado(estadoFechoEpsilon);
 				if (arcosDoEstadoFechoEpsilon != null && !arcosDoEstadoFechoEpsilon.isEmpty()){
-//					System.out.println("\nFecho epsilon: " + estadoFechoEpsilon);
 					for (Arco arco : arcosDoEstadoFechoEpsilon) {
-//						System.out.println(arco);
-						retorno.add(new Arco(automato.getEstadoPorId(estadoComFechoEpsilon), arco.getEstadoFinal(), arco.getExpressao()));
+						Arco novoArco = new Arco(automato.getEstadoPorId(estadoComFechoEpsilon), arco.getEstadoFinal(), arco.getExpressao());
+						adicionaPasso("Cria novo arco : " + novoArco);
+						retorno.add(novoArco);
 					}
 				}
 			}
 		}
-		adicionaPasso("Início passo III - todo arco de Y em A para qualquer Y no &-fecho(X) gera um arco de X para A");
+		adicionaPasso("Fim passo III - todo arco de Y em A para qualquer Y no &-fecho(X) gera um arco de X para A");
 		return retorno;
 	}
 	
