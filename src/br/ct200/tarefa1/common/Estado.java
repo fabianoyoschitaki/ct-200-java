@@ -2,8 +2,8 @@ package br.ct200.tarefa1.common;
 
 public class Estado {
 	private static Integer proximoId = 0;
-	public Integer id;
-	public TipoEstadoEnum tipo;
+	private Integer id;
+	private TipoEstadoEnum tipo;
 
 	public Estado(TipoEstadoEnum tipo) {
 		super();
