@@ -19,7 +19,6 @@ import br.ct200.tarefa1.processo.ProcessamentoLinguagemUniao;
  *
  */
 public class ProcessamentoLinguagemUtil {
-	public static StringBuffer passosTransformacao = new StringBuffer();
 	
 	/**
 	 * Método que verifica tipo de processamento da linguagem na ordem
@@ -29,7 +28,6 @@ public class ProcessamentoLinguagemUtil {
 	 * @return
 	 */
 	public static ProcessamentoLinguagem getTipoProcessamentoLinguagem(Arco arco) {
-		passosTransformacao.append("Arco para processar: ").append(arco.getExpressao()).append("\n");
 		ProcessamentoLinguagem retorno = null;
 		for (TipoProcessamentoEnum tipo : TipoProcessamentoEnum.values()){
 			retorno = getProcessamentoLinguagem(tipo, arco.getExpressao());
@@ -49,7 +47,6 @@ public class ProcessamentoLinguagemUtil {
 	 */
 	private static ProcessamentoLinguagem getProcessamentoLinguagem(
 			TipoProcessamentoEnum tipo, String expressao) {
-		passosTransformacao.append("Processamento:").append(tipo).append(" -> ").append(expressao).append("\n");
 		if (TipoProcessamentoEnum.UNIAO.equals(tipo)){
 			return getProcessamentoLinguagemUniao(expressao);
 		} else if (TipoProcessamentoEnum.CONCATENACAO.equals(tipo)){
@@ -68,7 +65,6 @@ public class ProcessamentoLinguagemUtil {
 		if (expressao.startsWith("(") && expressao.endsWith(")")){
 			retorno = new ProcessamentoLinguagemParentese();
 			retorno.setLinguagem(expressao.substring(1, expressao.length()-1));
-			passosTransformacao.append("\tProcessamento Parentese ok: ").append(retorno.getLinguagem()).append("\n");
 		}
 		return retorno;
 	}
@@ -79,7 +75,6 @@ public class ProcessamentoLinguagemUtil {
 		if (expressao.endsWith("*")){
 			retorno = new ProcessamentoLinguagemKleene();
 			retorno.setLinguagem(expressao.substring(0, expressao.length()-1));
-			passosTransformacao.append("\tProcessamento Kleene ok: ").append(retorno.getLinguagem()).append("\n");
 		};
 		return retorno;
 	}
@@ -168,7 +163,6 @@ public class ProcessamentoLinguagemUtil {
 			retorno.setLinguagemInicial(expressao.substring(0, posicaoConcatenacao));
 			String linguagemFinal = expressao.substring(posicaoConcatenacao);
 			retorno.setLinguagemFinal(linguagemFinal);
-			passosTransformacao.append("\tProcessamento Concatenação ok: ").append(retorno.getLinguagemInicial()).append(" ### ").append(retorno.getLinguagemFinal()).append("\n");
 		};
 		return retorno;
 	}
@@ -198,7 +192,6 @@ public class ProcessamentoLinguagemUtil {
 				retorno.setLinguagemInicial(expressao.substring(0, posicaoUniao));
 				String linguagemFinal = expressao.substring(posicaoUniao+1);
 				retorno.setLinguagemFinal(linguagemFinal);
-				passosTransformacao.append("\tProcessamento União ok: ").append(retorno.getLinguagemInicial()).append(" ### ").append(retorno.getLinguagemFinal()).append("\n");
 			};
 		}
 		return retorno;

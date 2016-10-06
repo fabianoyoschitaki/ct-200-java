@@ -1,10 +1,12 @@
 package br.ct200.tarefa1.atividade;
 
+import java.util.List;
+
 import br.ct200.tarefa1.common.Automato;
-import br.ct200.tarefa1.common.GraphvizParser;
 import br.ct200.tarefa1.common.Estado;
+import br.ct200.tarefa1.common.GraphvizParser;
+import br.ct200.tarefa1.common.Passo;
 import br.ct200.tarefa1.processo.ProcessamentoCadeia;
-import br.ct200.tarefa1.util.ProcessamentoCadeiaUtil;
 
 public class MainSegundaAtividade {
 
@@ -29,7 +31,10 @@ public class MainSegundaAtividade {
 		Automato automato = new Automato(expressaoRegular);
 		ProcessamentoCadeia resultado = automato.processaCadeia(cadeiaParaVerificar);
 		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
-		System.out.println(ProcessamentoCadeiaUtil.passosProcessamento.toString());
+		List<Passo> passos = resultado.getPassosProcessamento();
+		for (Passo passo : passos) {
+			System.out.println(passo);
+		}
 		System.out.println("Cadeia:" + resultado.getCadeia());
 		for (Estado estado : resultado.getEstadosPossiveis()) {
 			System.out.println("Estado possível: " + estado);

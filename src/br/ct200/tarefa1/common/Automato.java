@@ -17,9 +17,18 @@ import br.ct200.tarefa1.util.ProcessamentoCadeiaUtil;
 import br.ct200.tarefa1.util.ProcessamentoLinguagemUtil;
 
 public class Automato {
-	private HashMap<Integer, Estado> mapEstadosPorId;
+	/** regex de entrada **/
 	private String expressaoRegular;
+	
+	/** map de id estado x estado **/
+	private HashMap<Integer, Estado> mapEstadosPorId;
+	
+	/** map de id estado x arcos do estado **/
 	private Map<Integer, List<Arco>> mapArcosPorIdEstado;
+	
+	/** passos para a criação do autômato a partir da regex **/
+	private List<Passo> passosAutomato = new ArrayList<Passo>();
+	private Integer numeroPassoAutomato = 0;
 	
 	/**
 	 * Construtor que recebe expressão regular
@@ -29,6 +38,7 @@ public class Automato {
 	public Automato(String expressaoRegular){
 		super();
 		Estado.zeraId();
+		adicionaPasso("Iniciando automâto com regex: " + expressaoRegular);
 		this.expressaoRegular = expressaoRegular;
 		this.mapArcosPorIdEstado = new LinkedHashMap<Integer, List<Arco>>();
 		this.mapEstadosPorId = new LinkedHashMap<Integer, Estado>();
@@ -44,6 +54,7 @@ public class Automato {
 	 */
 	private Estado criaNovoEstado(TipoEstadoEnum tipo) {
 		Estado retorno = new Estado(tipo);
+		adicionaPasso("Cria novo estado : " + retorno);
 		mapEstadosPorId.put(retorno.getId(), retorno);
 		return retorno;
 	}
@@ -79,6 +90,7 @@ public class Automato {
 			processaArco(arcoParaProcessar);
 			arcoParaProcessar = proximoArcoParaProcessar();
 		}
+		adicionaPasso("Construção de Autômato concluída");
 	}
 
 	/**
@@ -96,25 +108,32 @@ public class Automato {
 			ProcessamentoLinguagem processamentoArco = ProcessamentoLinguagemUtil.getTipoProcessamentoLinguagem(arcoParaProcessar);
 			if (processamentoArco instanceof ProcessamentoLinguagemUniao){
 				ProcessamentoLinguagemUniao uniao = (ProcessamentoLinguagemUniao) processamentoArco;
+				adicionaPasso("União de linguagens em : " + arcoParaProcessar);
 				arcoParaProcessar.setExpressao(uniao.getLinguagemInicial());
+				adicionaPasso("Altera arco : " + arcoParaProcessar);
 				criaNovoArco(arcoParaProcessar.getEstadoInicial(), arcoParaProcessar.getEstadoFinal(), uniao.getLinguagemFinal());
 			} else if (processamentoArco instanceof ProcessamentoLinguagemConcatenacao){
 				ProcessamentoLinguagemConcatenacao concatenacao = (ProcessamentoLinguagemConcatenacao) processamentoArco;
+				adicionaPasso("Concatenação de linguagens em : " + arcoParaProcessar);
 				arcoParaProcessar.setExpressao(concatenacao.getLinguagemInicial());
 				Estado estadoFinal = arcoParaProcessar.getEstadoFinal();
 				Estado estadoIntermediario = criaNovoEstado(TipoEstadoEnum.COMUM);
 				arcoParaProcessar.setEstadoFinal(estadoIntermediario);
+				adicionaPasso("Altera arco : " + arcoParaProcessar);
 				criaNovoArco(estadoIntermediario, estadoFinal, concatenacao.getLinguagemFinal());
 			} else if (processamentoArco instanceof ProcessamentoLinguagemKleene){
 				ProcessamentoLinguagemKleene kleene = (ProcessamentoLinguagemKleene) processamentoArco;
+				adicionaPasso("Fecho de Kleene em : " + arcoParaProcessar);
 				Estado estadoFinal = arcoParaProcessar.getEstadoFinal();
 				Estado estadoKleene = criaNovoEstado(TipoEstadoEnum.COMUM);
 				arcoParaProcessar.setExpressao("&");
 				arcoParaProcessar.setEstadoFinal(estadoKleene);
-				criaNovoArco(estadoKleene, estadoFinal, "&");
+				adicionaPasso("Altera arco : " + arcoParaProcessar);
 				criaNovoArco(estadoKleene, estadoKleene, kleene.getLinguagem());
+				criaNovoArco(estadoKleene, estadoFinal, "&");
 			} else if (processamentoArco instanceof ProcessamentoLinguagemParentese){
 				ProcessamentoLinguagemParentese parentese = (ProcessamentoLinguagemParentese) processamentoArco;
+				adicionaPasso("Remoção de parênteses em : " + arcoParaProcessar);
 				arcoParaProcessar.setExpressao(parentese.getLinguagem());
 			}
 		}
@@ -133,6 +152,7 @@ public class Automato {
 			if (arcosDoEstado != null){
 				for (Arco arco : arcosDoEstado){
 					if (arco.getExpressao().length() > 1){
+						adicionaPasso("Arco para processar: " + arco);
 						return arco;
 					}
 				}
@@ -158,6 +178,7 @@ public class Automato {
 	 * @param novoArco
 	 */
 	public void criaNovoArco(Arco novoArco) {
+		adicionaPasso("Cria novo arco : " + novoArco);
 		List<Arco> arcosDoEstadoInicial = mapArcosPorIdEstado.get(novoArco.getEstadoInicial().getId());
 		if (arcosDoEstadoInicial == null){
 			arcosDoEstadoInicial = new ArrayList<Arco>();
@@ -375,5 +396,23 @@ public class Automato {
 			}
 		}
 		return retorno;
+	}
+
+	/**
+	 * Retorna o histórico de passos para a criação do autômato
+	 * 
+	 * @return
+	 */
+	public List<Passo> getPassosAutomato() {
+		return passosAutomato;
+	}
+	
+	/**
+	 * Cria novo passo para guardar no histórico
+	 * 
+	 * @param descricao
+	 */
+	public void adicionaPasso(String descricao){
+		this.passosAutomato.add(new Passo(numeroPassoAutomato++, descricao));
 	}
 }

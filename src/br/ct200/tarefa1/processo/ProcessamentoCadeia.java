@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ct200.tarefa1.common.Estado;
+import br.ct200.tarefa1.common.Passo;
 import br.ct200.tarefa1.common.TipoEstadoEnum;
 
 public class ProcessamentoCadeia {
 	private List<Estado> estadosPossiveis;
 	private String cadeia;
+	
+	/** passos para a validação da cadeia em um autômato **/
+	private List<Passo> passosProcessamento = new ArrayList<Passo>();
+	private Integer numeroPassoAutomato = 0;
+	
 	
 	public ProcessamentoCadeia(String cadeia) {
 		super();
@@ -34,5 +40,23 @@ public class ProcessamentoCadeia {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Retorna o histórico de passos para o processamento da cadeia
+	 * 
+	 * @return
+	 */
+	public List<Passo> getPassosProcessamento() {
+		return passosProcessamento;
+	}
+	
+	/**
+	 * Cria novo passo para guardar no histórico
+	 * 
+	 * @param descricao
+	 */
+	public void adicionaPasso(String descricao){
+		this.passosProcessamento.add(new Passo(numeroPassoAutomato++, descricao));
 	}
 }
