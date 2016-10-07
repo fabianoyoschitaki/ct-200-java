@@ -236,14 +236,31 @@ public class Automato {
 	 * @return
 	 */
 	public String encontraExpressaoRegular() {
-		StringBuffer retorno = new StringBuffer();
+		String retorno = null;
+		adicionaPassoRegex("Iniciando busca por expressão regular a partir do autômato");
 		Estado estadoInicial = getEstadoInicial();
+		
+		adicionaPassoRegex("Início remoção de estados com fecho de Kleene");
 		removeFechoKleeneRecursivo(estadoInicial);
+		adicionaPassoRegex("Fim remoção de estados com fecho de Kleene");
+		
+		adicionaPassoRegex("Início remoção de estados com concatenação de linguagens");
 		removeConcatenacaoRecursivo(estadoInicial);
+		adicionaPassoRegex("Fim remoção de estados com concatenação de linguagens");
+		
+		adicionaPassoRegex("Início remoção de estados com união de linguagens");
 		removeUniaoRecursivo(estadoInicial);
-		return retorno.toString();
+		adicionaPassoRegex("Fim remoção de estados com união de linguagens");
+		
+		retorno = getArcosPorIdEstado(0).get(0).getExpressao();
+		adicionaPassoRegex("Somente um arco. Expressão regular encontrada: " + retorno);
+		return retorno;
 	}
 	
+	/**
+	 * 
+	 * @param estadoInicial
+	 */
 	private void removeUniaoRecursivo(Estado estadoInicial) {
 		List<Arco> arcosDoEstadoOrigem = getArcosPorIdEstado(estadoInicial.getId());
 		List<Arco> arcosUniaoTemp = new ArrayList<Arco>();
@@ -254,17 +271,19 @@ public class Automato {
 		}
 		if (arcosUniaoTemp != null && arcosUniaoTemp.size() > 1){
 			Arco primeiroArco = arcosUniaoTemp.get(0);
-			System.out.println("Primeiro arco " + primeiroArco);
 			for (int contArco = 1; contArco < arcosUniaoTemp.size(); contArco++) {
 				Arco proximoArco = arcosUniaoTemp.get(contArco);
-				System.out.println("Próximo arco " + proximoArco);
 				if (proximoArco.getEstadoFinal().equals(primeiroArco.getEstadoFinal())){
+					adicionaPassoRegex("Detectada união de linguagens : " + primeiroArco + " e " + proximoArco);
 					primeiroArco.setExpressao(primeiroArco.getExpressao() + "+" + proximoArco.getExpressao());
-					System.out.println("Arco resultante " + primeiroArco);
+					adicionaPassoRegex("Alterando arco para : " + primeiroArco);
 					removeArcoDoEstado(estadoInicial.getId(), proximoArco);
 					removeUniaoRecursivo(estadoInicial);
 				}
 			}
+		} else {
+			adicionaPassoRegex("Não foi detectada união de linguagens");
+			
 		}
 	}
 
@@ -291,7 +310,7 @@ public class Automato {
 							if (getArcosPorIdEstado(arcoEstadoOrigem.getIdEstadoInicial()).size() > 1){
 								removeUniaoRecursivo(arcoEstadoOrigem.getEstadoInicial());
 							}
-							System.out.println("Concatenacao " + arcoEstadoOrigem + " com " + arcoEstadoDestino);
+							adicionaPassoRegex("Detectada concatenação de linguagens : " + arcoEstadoOrigem + " e " + arcoEstadoDestino);
 							arcoEstadoOrigem.setEstadoFinal(arcoEstadoDestino.getEstadoFinal());
 							String primeiraParte = arcoEstadoOrigem.getExpressao();
 							if (primeiraParte.contains("+") && !primeiraParte.startsWith("(")){
@@ -302,6 +321,7 @@ public class Automato {
 								segundaParte = "(" + segundaParte + ")";
 							}
 							arcoEstadoOrigem.setExpressao(primeiraParte + segundaParte);
+							adicionaPassoRegex("Alterando arco para : " + arcoEstadoOrigem);
 							removeEstadoEArcos(arcoEstadoDestino.getIdEstadoInicial());
 							removeConcatenacaoRecursivo(arcoEstadoOrigem.getEstadoInicial());
 						}
@@ -320,7 +340,6 @@ public class Automato {
 		List<Arco> arcosDoEstadoOrigem = getArcosPorIdEstado(estadoInicial.getId());
 		if (arcosDoEstadoOrigem != null && !arcosDoEstadoOrigem.isEmpty()){
 			for (Arco arcoEstadoOrigem : arcosDoEstadoOrigem) {
-				System.out.println("ARCO " + arcoEstadoOrigem + " do estado " + estadoInicial);
 				List<Arco> arcosDoEstadoDestino = getArcosPorIdEstado(arcoEstadoOrigem.getIdEstadoFinal());
 				if (arcosDoEstadoDestino != null && !arcosDoEstadoDestino.isEmpty()){
 					for (int contArcoDestino = 0; contArcoDestino < arcosDoEstadoDestino.size(); contArcoDestino++) {
@@ -328,17 +347,17 @@ public class Automato {
 						// kleene
 						if (arcoEstadoOrigem.getExpressao().equals("&")
 						 && arcoEstadoDestino.getExpressao().equals("&")){
+							adicionaPassoRegex("Detectado fecho de Kleene nos arcos : " + arcoEstadoOrigem + " e " + arcoEstadoDestino);
 							removeConcatenacaoRecursivo(arcoEstadoOrigem.getEstadoFinal());
 							removeUniaoRecursivo(arcoEstadoOrigem.getEstadoFinal());
 							List<Arco> arcosDoEstadoKleeneSemEpsilon = getArcosSemEpsilonPorIdEstado(arcoEstadoOrigem.getIdEstadoFinal());
-							System.out.println("arcosKleeneTemp.size:" + arcosDoEstadoKleeneSemEpsilon.size());
-							System.out.println("Kleene:" + arcoEstadoOrigem + " com " + arcoEstadoDestino);
 							arcoEstadoOrigem.setEstadoFinal(arcoEstadoDestino.getEstadoFinal());
 							if (arcosDoEstadoKleeneSemEpsilon.get(0).getExpressao().length() > 1){
 								arcoEstadoOrigem.setExpressao("(" + arcosDoEstadoKleeneSemEpsilon.get(0).getExpressao() + ")*");
 							} else {
 								arcoEstadoOrigem.setExpressao(arcosDoEstadoKleeneSemEpsilon.get(0).getExpressao() + "*");
 							}
+							adicionaPassoRegex("Alterando arco para : " + arcoEstadoOrigem);
 							removeEstadoEArcos(arcoEstadoDestino.getIdEstadoInicial());
 						}
 					}
@@ -369,12 +388,11 @@ public class Automato {
 	 * @param idEstadoInicial
 	 */
 	private void removeEstadoEArcos(Integer idEstado) {
-		System.out.println("Remover estado:" + idEstado);
 		Estado estadoRemovido = mapEstadosPorId.remove(idEstado);
-		System.out.println("Removido estado:" + estadoRemovido);
+		adicionaPassoRegex("Removendo estado intermediário : " + estadoRemovido);
 		List<Arco> arcosRemovidos = mapArcosPorIdEstado.remove(idEstado);
 		for (Arco arcoRemovido : arcosRemovidos) {
-			System.out.println("Removido arco:" + arcoRemovido);
+			adicionaPassoRegex("Removendo arco do estado intermediário : " + arcoRemovido);
 		}
 	}
 	
@@ -384,7 +402,7 @@ public class Automato {
 	 * @param idEstadoInicial
 	 */
 	private void removeArcoDoEstado(Integer idEstado, Arco arco) {
-		System.out.println("Removendo arco:" + arco);
+		adicionaPassoRegex("Removendo arco : " + arco);
 		mapArcosPorIdEstado.get(idEstado).remove(arco);
 	}
 
@@ -397,6 +415,7 @@ public class Automato {
 		Estado retorno = null;
 		for (Estado estado : getTodosEstados()){
 			if (TipoEstadoEnum.INICIAL.equals(estado.getTipo())){
+				adicionaPassoRegex("Partindo do estado inicial : " + estado);
 				retorno = estado;
 			}
 		}
@@ -452,6 +471,10 @@ public class Automato {
 		Automato automato = new Automato(expressaoRegular);
 		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
 		System.out.println(automato.encontraExpressaoRegular());
+		List<Passo> passos = automato.getPassosRegex();
+		for (Passo passo : passos) {
+			System.out.println(passo);
+		}
 		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
 	}
 }

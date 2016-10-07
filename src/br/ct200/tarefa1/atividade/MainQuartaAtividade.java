@@ -25,7 +25,6 @@ public class MainQuartaAtividade {
 		
 		System.out.println("Regex: " + expressaoRegular);
 		Automato automato = new Automato(expressaoRegular);
-		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
 		System.out.println(automato.encontraExpressaoRegular());
 	}
 }
