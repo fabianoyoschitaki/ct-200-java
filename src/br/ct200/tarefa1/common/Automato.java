@@ -30,6 +30,10 @@ public class Automato {
 	private List<Passo> passosAutomato = new ArrayList<Passo>();
 	private Integer numeroPassoAutomato = 0;
 	
+	/** passos para a encontrar a regex do autômato **/
+	private List<Passo> passosRegex = new ArrayList<Passo>();
+	private Integer numeroPassoRegex = 0;
+	
 	/**
 	 * Construtor que recebe expressão regular
 	 * 
@@ -38,7 +42,7 @@ public class Automato {
 	public Automato(String expressaoRegular){
 		super();
 		Estado.zeraId();
-		adicionaPasso("Iniciando automâto com regex : " + expressaoRegular);
+		adicionaPassoAutomato("Iniciando automâto com regex : " + expressaoRegular);
 		this.expressaoRegular = expressaoRegular;
 		this.mapArcosPorIdEstado = new LinkedHashMap<Integer, List<Arco>>();
 		this.mapEstadosPorId = new LinkedHashMap<Integer, Estado>();
@@ -54,7 +58,7 @@ public class Automato {
 	 */
 	private Estado criaNovoEstado(TipoEstadoEnum tipo) {
 		Estado retorno = new Estado(tipo);
-		adicionaPasso("Cria novo estado : " + retorno);
+		adicionaPassoAutomato("Cria novo estado : " + retorno);
 		mapEstadosPorId.put(retorno.getId(), retorno);
 		return retorno;
 	}
@@ -90,7 +94,7 @@ public class Automato {
 			processaArco(arcoParaProcessar);
 			arcoParaProcessar = proximoArcoParaProcessar();
 		}
-		adicionaPasso("Construção de Autômato concluída");
+		adicionaPassoAutomato("Construção de Autômato concluída");
 	}
 
 	/**
@@ -108,32 +112,32 @@ public class Automato {
 			ProcessamentoLinguagem processamentoArco = ProcessamentoLinguagemUtil.getTipoProcessamentoLinguagem(arcoParaProcessar);
 			if (processamentoArco instanceof ProcessamentoLinguagemUniao){
 				ProcessamentoLinguagemUniao uniao = (ProcessamentoLinguagemUniao) processamentoArco;
-				adicionaPasso("União de linguagens em : " + arcoParaProcessar);
+				adicionaPassoAutomato("União de linguagens em : " + arcoParaProcessar);
 				arcoParaProcessar.setExpressao(uniao.getLinguagemInicial());
-				adicionaPasso("Altera arco : " + arcoParaProcessar);
+				adicionaPassoAutomato("Altera arco : " + arcoParaProcessar);
 				criaNovoArco(arcoParaProcessar.getEstadoInicial(), arcoParaProcessar.getEstadoFinal(), uniao.getLinguagemFinal());
 			} else if (processamentoArco instanceof ProcessamentoLinguagemConcatenacao){
 				ProcessamentoLinguagemConcatenacao concatenacao = (ProcessamentoLinguagemConcatenacao) processamentoArco;
-				adicionaPasso("Concatenação de linguagens em : " + arcoParaProcessar);
+				adicionaPassoAutomato("Concatenação de linguagens em : " + arcoParaProcessar);
 				arcoParaProcessar.setExpressao(concatenacao.getLinguagemInicial());
 				Estado estadoFinal = arcoParaProcessar.getEstadoFinal();
 				Estado estadoIntermediario = criaNovoEstado(TipoEstadoEnum.COMUM);
 				arcoParaProcessar.setEstadoFinal(estadoIntermediario);
-				adicionaPasso("Altera arco : " + arcoParaProcessar);
+				adicionaPassoAutomato("Altera arco : " + arcoParaProcessar);
 				criaNovoArco(estadoIntermediario, estadoFinal, concatenacao.getLinguagemFinal());
 			} else if (processamentoArco instanceof ProcessamentoLinguagemKleene){
 				ProcessamentoLinguagemKleene kleene = (ProcessamentoLinguagemKleene) processamentoArco;
-				adicionaPasso("Fecho de Kleene em : " + arcoParaProcessar);
+				adicionaPassoAutomato("Fecho de Kleene em : " + arcoParaProcessar);
 				Estado estadoFinal = arcoParaProcessar.getEstadoFinal();
 				Estado estadoKleene = criaNovoEstado(TipoEstadoEnum.COMUM);
 				arcoParaProcessar.setExpressao("&");
 				arcoParaProcessar.setEstadoFinal(estadoKleene);
-				adicionaPasso("Altera arco : " + arcoParaProcessar);
+				adicionaPassoAutomato("Altera arco : " + arcoParaProcessar);
 				criaNovoArco(estadoKleene, estadoKleene, kleene.getLinguagem());
 				criaNovoArco(estadoKleene, estadoFinal, "&");
 			} else if (processamentoArco instanceof ProcessamentoLinguagemParentese){
 				ProcessamentoLinguagemParentese parentese = (ProcessamentoLinguagemParentese) processamentoArco;
-				adicionaPasso("Remoção de parênteses em : " + arcoParaProcessar);
+				adicionaPassoAutomato("Remoção de parênteses em : " + arcoParaProcessar);
 				arcoParaProcessar.setExpressao(parentese.getLinguagem());
 			}
 		}
@@ -152,7 +156,7 @@ public class Automato {
 			if (arcosDoEstado != null){
 				for (Arco arco : arcosDoEstado){
 					if (arco.getExpressao().length() > 1){
-						adicionaPasso("Arco para processar: " + arco);
+						adicionaPassoAutomato("Arco para processar: " + arco);
 						return arco;
 					}
 				}
@@ -178,7 +182,7 @@ public class Automato {
 	 * @param novoArco
 	 */
 	public void criaNovoArco(Arco novoArco) {
-		adicionaPasso("Cria novo arco : " + novoArco);
+		adicionaPassoAutomato("Cria novo arco : " + novoArco);
 		List<Arco> arcosDoEstadoInicial = mapArcosPorIdEstado.get(novoArco.getEstadoInicial().getId());
 		if (arcosDoEstadoInicial == null){
 			arcosDoEstadoInicial = new ArrayList<Arco>();
@@ -316,6 +320,7 @@ public class Automato {
 		List<Arco> arcosDoEstadoOrigem = getArcosPorIdEstado(estadoInicial.getId());
 		if (arcosDoEstadoOrigem != null && !arcosDoEstadoOrigem.isEmpty()){
 			for (Arco arcoEstadoOrigem : arcosDoEstadoOrigem) {
+				System.out.println("ARCO " + arcoEstadoOrigem + " do estado " + estadoInicial);
 				List<Arco> arcosDoEstadoDestino = getArcosPorIdEstado(arcoEstadoOrigem.getIdEstadoFinal());
 				if (arcosDoEstadoDestino != null && !arcosDoEstadoDestino.isEmpty()){
 					for (int contArcoDestino = 0; contArcoDestino < arcosDoEstadoDestino.size(); contArcoDestino++) {
@@ -336,8 +341,8 @@ public class Automato {
 							}
 							removeEstadoEArcos(arcoEstadoDestino.getIdEstadoInicial());
 						}
-						removeFechoKleeneRecursivo(arcoEstadoOrigem.getEstadoFinal());
 					}
+					removeFechoKleeneRecursivo(arcoEstadoOrigem.getEstadoFinal());
 				}
 			}
 		}
@@ -408,11 +413,45 @@ public class Automato {
 	}
 	
 	/**
-	 * Cria novo passo para guardar no histórico
+	 * Cria novo passo para guardar no histórico da criação do autômato
 	 * 
 	 * @param descricao
 	 */
-	public void adicionaPasso(String descricao){
+	public void adicionaPassoAutomato(String descricao){
 		this.passosAutomato.add(new Passo(numeroPassoAutomato++, descricao));
+	}
+	
+	/**
+	 * Retorna o histórico de passos para a identificação da regex do autômato
+	 * 
+	 * @return
+	 */
+	public List<Passo> getPassosRegex() {
+		return passosRegex;
+	}
+	
+	/**
+	 * Cria novo passo para guardar no histórico da identificação da regex
+	 * 
+	 * @param descricao
+	 */
+	public void adicionaPassoRegex(String descricao){
+		this.passosRegex.add(new Passo(numeroPassoRegex++, descricao));
+	}
+	
+	public static void main(String[] args) {
+//		String expressaoRegular = "(a+b)*";
+//		String expressaoRegular = "(a+b)*bb(b+a)*";
+//		String expressaoRegular = "(a(b+c))*";
+//		String expressaoRegular = "((b+c)ab+a)*";
+//		String expressaoRegular = "a*b+b*a+a*b*";
+//		String expressaoRegular = "a*b*c*";
+		String expressaoRegular = "a*b*c*d*e*ff";
+		
+		System.out.println("Regex: " + expressaoRegular);
+		Automato automato = new Automato(expressaoRegular);
+		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
+		System.out.println(automato.encontraExpressaoRegular());
+		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
 	}
 }

@@ -15,8 +15,8 @@ public class MainQuartaAtividade {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String expressaoRegular = "(a+b)*";
-//		String expressaoRegular = "(a+b)*bb(b+a)*";
+//		String expressaoRegular = "(a+b)*";
+		String expressaoRegular = "(a+b)*bb(b+a)*";
 //		String expressaoRegular = "(a(b+c))*";
 //		String expressaoRegular = "((b+c)ab+a)*";
 //		String expressaoRegular = "a*b+b*a+a*b*";
@@ -27,6 +27,5 @@ public class MainQuartaAtividade {
 		Automato automato = new Automato(expressaoRegular);
 		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
 		System.out.println(automato.encontraExpressaoRegular());
-		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
 	}
 }
