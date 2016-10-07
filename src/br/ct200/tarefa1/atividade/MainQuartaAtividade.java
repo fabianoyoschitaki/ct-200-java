@@ -1,7 +1,6 @@
 package br.ct200.tarefa1.atividade;
 
 import br.ct200.tarefa1.common.Automato;
-import br.ct200.tarefa1.common.GraphvizParser;
 
 public class MainQuartaAtividade {
 
