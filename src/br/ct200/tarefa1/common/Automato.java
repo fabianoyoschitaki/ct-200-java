@@ -457,24 +457,4 @@ public class Automato {
 	public void adicionaPassoRegex(String descricao){
 		this.passosRegex.add(new Passo(numeroPassoRegex++, descricao));
 	}
-	
-	public static void main(String[] args) {
-//		String expressaoRegular = "(a+b)*";
-//		String expressaoRegular = "(a+b)*bb(b+a)*";
-//		String expressaoRegular = "(a(b+c))*";
-//		String expressaoRegular = "((b+c)ab+a)*";
-//		String expressaoRegular = "a*b+b*a+a*b*";
-//		String expressaoRegular = "a*b*c*";
-		String expressaoRegular = "a*b*c*d*e*ff";
-		
-		System.out.println("Regex: " + expressaoRegular);
-		Automato automato = new Automato(expressaoRegular);
-		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
-		System.out.println(automato.encontraExpressaoRegular());
-		List<Passo> passos = automato.getPassosRegex();
-		for (Passo passo : passos) {
-			System.out.println(passo);
-		}
-		System.out.println(GraphvizParser.traduzAutomatoParaGraphviz(automato));
-	}
 }
